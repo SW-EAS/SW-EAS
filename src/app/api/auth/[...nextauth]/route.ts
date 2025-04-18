@@ -57,7 +57,8 @@ async function authenticateUser(
   };
 }
 
-const authOptions: NextAuthOptions = {
+// ✅ Export authOptions so it can be used in other files
+export const authOptions: NextAuthOptions = {
   providers: [
     CredentialsProvider({
       name: 'Credentials',

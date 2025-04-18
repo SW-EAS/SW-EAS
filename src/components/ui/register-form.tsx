@@ -30,7 +30,7 @@ export function RegisterForm({
       const res = await fetch('/api/register', {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify(form),
+        body: JSON.stringify({ ...form, role: 'user' }), // ✅ role added here
       });
 
       const data = await res.json();

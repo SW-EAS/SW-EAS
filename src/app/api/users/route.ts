@@ -29,10 +29,15 @@ export async function GET(): Promise<NextResponse> {
 }
 
 /** POST `/api/users` → Create a new user */
+/** POST `/api/users` → Create a new user */
 export async function POST(req: NextRequest): Promise<NextResponse> {
   try {
     await connectToDatabase();
-    const { name, email, password, role } = await req.json();
+
+    const body = await req.json();
+    const { name, email, password, role } = body;
+
+    console.log('REGISTERING USER:', body); // ✅ Log full incoming payload
 
     if (!name || !email || !password) {
       return errorResponse('Missing required fields', 400);
@@ -43,12 +48,15 @@ export async function POST(req: NextRequest): Promise<NextResponse> {
       return errorResponse('User already exists', 400);
     }
 
+    const allowedRoles = ['admin', 'specialist', 'user'];
+    const sanitizedRole = allowedRoles.includes(role) ? role : 'user';
+
     const hashedPassword = await bcrypt.hash(password, 10);
     const newUser = await User.create({
       name,
       email,
       password: hashedPassword,
-      role,
+      role: sanitizedRole,
     });
 
     return NextResponse.json(
@@ -56,7 +64,10 @@ export async function POST(req: NextRequest): Promise<NextResponse> {
       { status: 201 }
     );
   } catch (error) {
-    console.error('Error creating user:', error);
-    return errorResponse('Server error', 500);
+    console.error('Error creating user:', error); // ✅ Print full error
+    return errorResponse(
+      error instanceof Error ? error.message : 'Server error',
+      500
+    );
   }
 }

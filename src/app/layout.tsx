@@ -5,6 +5,7 @@ import './globals.css';
 import { Open_Sans } from 'next/font/google';
 import Header from '@/components/layout/Header/Header';
 import Footer from '@/components/layout/Footer/Footer';
+import SessionWrapper from '@/components/providers/SessionWrapper';
 
 const openSans = Open_Sans({
   subsets: ['latin'],
@@ -26,9 +27,13 @@ export default function RootLayout({
   return (
     <html lang="en" className={openSans.variable}>
       <body className="h-screen grid grid-rows-[auto_1fr_auto] antialiased bg-white text-black">
-        <Header />
-        <main>{children}</main>
-        <Footer />
+        <SessionWrapper>
+          {' '}
+          {/* ✅ moved client context to client component */}
+          <Header />
+          <main>{children}</main>
+          <Footer />
+        </SessionWrapper>
       </body>
     </html>
   );

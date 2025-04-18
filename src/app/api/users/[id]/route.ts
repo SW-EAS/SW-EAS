@@ -44,7 +44,7 @@ export async function PUT(
     const { id } = await getParams(context);
     if (!id) return errorResponse('User ID is required', 400);
 
-    const { name, email, password, roles, currentPassword } = await req.json();
+    const { name, email, password, role, currentPassword } = await req.json();
 
     const user = await User.findById(id);
     if (!user) return errorResponse('User not found', 404);
@@ -60,11 +60,11 @@ export async function PUT(
       name: string;
       email: string;
       password?: string;
-      roles: string[];
+      role: string;
     }> = {
       name,
       email,
-      roles,
+      role,
       ...(password && { password: await bcrypt.hash(password, 10) }),
     };
 

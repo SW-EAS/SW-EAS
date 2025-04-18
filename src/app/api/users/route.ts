@@ -32,7 +32,7 @@ export async function GET(): Promise<NextResponse> {
 export async function POST(req: NextRequest): Promise<NextResponse> {
   try {
     await connectToDatabase();
-    const { name, email, password, roles } = await req.json();
+    const { name, email, password, role } = await req.json();
 
     if (!name || !email || !password) {
       return errorResponse('Missing required fields', 400);
@@ -48,7 +48,7 @@ export async function POST(req: NextRequest): Promise<NextResponse> {
       name,
       email,
       password: hashedPassword,
-      roles,
+      role,
     });
 
     return NextResponse.json(

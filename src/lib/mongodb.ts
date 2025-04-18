@@ -1,59 +1,36 @@
-//src/lib/mongodb.ts
+// src/lib/mongodb.ts
+import mongoose, { Mongoose } from 'mongoose';
 
-import mongoose from 'mongoose';
-
-/* eslint-disable no-var */
-declare global {
-  var _mongooseCache:
-    | {
-        conn: typeof mongoose | null;
-        promise: Promise<typeof mongoose> | null;
-      }
-    | undefined;
-}
-
-const MONGODB_URI = process.env.MONGODB_URI as string;
+const MONGODB_URI = process.env.MONGODB_URI!;
 const DB_NAME = process.env.DB_NAME || 'sweas';
 
-if (!MONGODB_URI) {
-  throw new Error('Missing MONGODB_URI environment variable.');
+if (!MONGODB_URI) throw new Error('Missing MONGODB_URI');
+
+type MongooseConnectionCache = {
+  conn: Mongoose | null;
+  promise: Promise<Mongoose> | null;
+};
+
+declare global {
+  // eslint-disable-next-line no-var
+  var mongooseCache: MongooseConnectionCache | undefined;
 }
 
-// Initialize global cache or reuse existing
-const globalCache =
-  globalThis._mongooseCache ??
-  (globalThis._mongooseCache = { conn: null, promise: null });
+const globalCache: MongooseConnectionCache = global.mongooseCache ?? {
+  conn: null,
+  promise: null,
+};
 
-export async function connectToDatabase() {
+export async function connectToDatabase(): Promise<Mongoose> {
   if (globalCache.conn) return globalCache.conn;
 
   if (!globalCache.promise) {
-    globalCache.promise = mongoose
-      .connect(MONGODB_URI, {
-        dbName: DB_NAME,
-        bufferCommands: false,
-        maxPoolSize: 10,
-        serverSelectionTimeoutMS: 5000,
-      })
-      .then((mongooseInstance) => {
-        console.log('MongoDB connected');
-        return mongooseInstance;
-      })
-      .catch((error) => {
-        console.error('MongoDB connection error:', error);
-        throw new Error('Failed to connect to database.');
-      });
+    globalCache.promise = mongoose.connect(MONGODB_URI, {
+      dbName: DB_NAME,
+    });
   }
 
   globalCache.conn = await globalCache.promise;
+  global.mongooseCache = globalCache;
   return globalCache.conn;
-}
-
-export async function disconnectFromDatabase() {
-  if (globalCache.conn) {
-    await mongoose.disconnect();
-    globalCache.conn = null;
-    globalCache.promise = null;
-    console.log('MongoDB disconnected');
-  }
 }

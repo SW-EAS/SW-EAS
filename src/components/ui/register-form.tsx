@@ -1,6 +1,7 @@
 'use client';
 
 import { useState } from 'react';
+import { useRouter } from 'next/navigation';
 import { cn } from '@/lib/utils';
 import { Button } from '@/components/ui/button';
 import { Card, CardContent } from '@/components/ui/card';
@@ -11,6 +12,7 @@ export function RegisterForm({
   className,
   ...props
 }: React.ComponentProps<'div'>) {
+  const router = useRouter();
   const [form, setForm] = useState({ name: '', email: '', password: '' });
   const [error, setError] = useState('');
   const [success, setSuccess] = useState('');
@@ -34,7 +36,8 @@ export function RegisterForm({
       const data = await res.json();
 
       if (!res.ok) throw new Error(data.message);
-      setSuccess('Registration successful. You may now log in.');
+      setSuccess('Registration successful. Redirecting to login...');
+      setTimeout(() => router.push('/login'), 1500);
     } catch (err) {
       const error = err as Error;
       setError(error.message || 'Something went wrong');

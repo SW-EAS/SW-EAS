@@ -3,6 +3,8 @@
 'use client';
 
 import { useState } from 'react';
+import { useRouter } from 'next/navigation';
+import { signIn } from 'next-auth/react';
 import Link from 'next/link';
 import { cn } from '@/lib/utils';
 import { Button } from '@/components/ui/button';
@@ -17,6 +19,7 @@ export function LoginForm({
   const [form, setForm] = useState({ email: '', password: '' });
   const [error, setError] = useState('');
   const [success, setSuccess] = useState('');
+  const router = useRouter();
 
   const handleChange = (e: React.ChangeEvent<HTMLInputElement>) => {
     setForm({ ...form, [e.target.id]: e.target.value });
@@ -27,21 +30,17 @@ export function LoginForm({
     setError('');
     setSuccess('');
 
-    try {
-      const res = await fetch('/api/login', {
-        method: 'POST',
-        headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify(form),
-      });
+    const result = await signIn('credentials', {
+      redirect: false,
+      email: form.email,
+      password: form.password,
+    });
 
-      const data = await res.json();
-
-      if (!res.ok) throw new Error(data.message);
+    if (!result || result.error) {
+      setError(result?.error || 'Invalid credentials');
+    } else {
       setSuccess('Login successful. Redirecting...');
-      // Optional: redirect with router.push('/dashboard') if using next/navigation
-    } catch (err) {
-      const error = err as Error;
-      setError(error.message || 'Something went wrong');
+      router.replace('/dashboard'); // Adjust as needed
     }
   };
 
@@ -60,7 +59,7 @@ export function LoginForm({
               <div className="flex flex-col items-center text-center">
                 <h1 className="text-2xl font-bold">Welcome back</h1>
                 <p className="text-gray-700 dark:text-gray-300 text-balance">
-                  Login to your Acme Inc account
+                  Login to your SW-EAS account
                 </p>
               </div>
               <div className="grid gap-3">

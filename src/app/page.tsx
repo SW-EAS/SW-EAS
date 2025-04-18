@@ -1,3 +1,5 @@
+// src/app/page.tsx
+
 import { ShieldCheck } from 'lucide-react';
 
 export default async function Home() {

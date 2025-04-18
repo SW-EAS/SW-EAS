@@ -11,7 +11,7 @@ declare module 'next-auth' {
     id: string;
     name: string;
     email: string;
-    roles: string[];
+    role: string;
     isOnline: boolean;
   }
 
@@ -23,7 +23,7 @@ declare module 'next-auth' {
 declare module 'next-auth/jwt' {
   interface JWT {
     id: string;
-    roles: string[];
+    role: string;
   }
 }
 
@@ -52,7 +52,7 @@ async function authenticateUser(
     id: user._id.toString(),
     name: user.name,
     email: user.email,
-    roles: user.roles,
+    role: user.role,
     isOnline: true,
   };
 }
@@ -82,7 +82,7 @@ const authOptions: NextAuthOptions = {
     async jwt({ token, user }) {
       if (user) {
         token.id = user.id;
-        token.roles = user.roles;
+        token.role = user.role;
       }
       return token;
     },
@@ -93,7 +93,7 @@ const authOptions: NextAuthOptions = {
         session.user = {
           ...session.user,
           id: token.id,
-          roles: token.roles,
+          role: token.role,
           isOnline: user?.isOnline ?? false,
         };
       }

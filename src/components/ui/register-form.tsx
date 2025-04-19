@@ -16,6 +16,7 @@ export function RegisterForm({
   const [form, setForm] = useState({ name: '', email: '', password: '' });
   const [error, setError] = useState('');
   const [success, setSuccess] = useState('');
+  const [loading, setLoading] = useState(false);
 
   const handleChange = (e: React.ChangeEvent<HTMLInputElement>) => {
     setForm({ ...form, [e.target.id]: e.target.value });
@@ -25,43 +26,52 @@ export function RegisterForm({
     e.preventDefault();
     setError('');
     setSuccess('');
+    setLoading(true);
 
     try {
       const res = await fetch('/api/register', {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify({ ...form, role: 'user' }), // ✅ role added here
+        body: JSON.stringify({ ...form, role: 'user' }),
       });
 
       const data = await res.json();
-
       if (!res.ok) throw new Error(data.message);
-      setSuccess('Registration successful. Redirecting to login...');
+
+      setSuccess('Registration successful. Redirecting...');
       setTimeout(() => router.push('/login'), 1500);
     } catch (err) {
       const error = err as Error;
       setError(error.message || 'Something went wrong');
+    } finally {
+      setLoading(false);
     }
   };
 
   return (
     <div
       className={cn(
-        'flex flex-col gap-6 bg-white dark:bg-gray-900 text-gray-900 dark:text-white p-6 rounded-lg',
+        'grid gap-6 container mx-auto w-full bg-white dark:bg-gray-900 text-gray-900 dark:text-white rounded-lg',
         className
       )}
       {...props}
     >
-      <Card className="overflow-hidden p-0 bg-white dark:bg-gray-800 border border-gray-200 dark:border-gray-700">
-        <CardContent className="grid p-0 md:grid-cols-2">
-          <form className="p-6 md:p-8" onSubmit={handleSubmit}>
-            <div className="flex flex-col gap-6">
-              <div className="flex flex-col items-center text-center">
+      <Card className="bg-white dark:bg-gray-800 border border-gray-200 dark:border-gray-700 p-0">
+        <CardContent className="grid md:grid-cols-2 p-0 min-h-[500px]">
+          {/* Column 1: Form with padding */}
+          <div className="flex items-center justify-center p-6">
+            <form
+              className="grid gap-6 w-full max-w-md"
+              onSubmit={handleSubmit}
+              noValidate
+            >
+              <div className="grid gap-1 text-center">
                 <h1 className="text-2xl font-bold">Create an account</h1>
-                <p className="text-gray-700 dark:text-gray-300 text-balance">
+                <p className="text-gray-700 dark:text-gray-300">
                   Join SW-EAS and lead with integrity
                 </p>
               </div>
+
               <div className="grid gap-3">
                 <Label htmlFor="name">Name</Label>
                 <Input
@@ -70,9 +80,12 @@ export function RegisterForm({
                   placeholder="Your full name"
                   value={form.name}
                   onChange={handleChange}
+                  autoComplete="name"
                   required
+                  className="focus:outline-none focus:ring-0"
                 />
               </div>
+
               <div className="grid gap-3">
                 <Label htmlFor="email">Email</Label>
                 <Input
@@ -81,9 +94,12 @@ export function RegisterForm({
                   placeholder="m@example.com"
                   value={form.email}
                   onChange={handleChange}
+                  autoComplete="email"
                   required
+                  className="focus:outline-none focus:ring-0"
                 />
               </div>
+
               <div className="grid gap-3">
                 <Label htmlFor="password">Password</Label>
                 <Input
@@ -91,15 +107,26 @@ export function RegisterForm({
                   type="password"
                   value={form.password}
                   onChange={handleChange}
+                  autoComplete="new-password"
                   required
+                  className="focus:outline-none focus:ring-0"
                 />
               </div>
-              <Button type="submit" className="w-full">
-                Sign Up
+
+              <Button type="submit" className="w-full" disabled={loading}>
+                {loading ? 'Registering...' : 'Sign Up'}
               </Button>
 
-              {error && <p className="text-sm text-red-500">{error}</p>}
-              {success && <p className="text-sm text-green-600">{success}</p>}
+              {error && (
+                <p className="text-sm text-red-500" aria-live="assertive">
+                  {error}
+                </p>
+              )}
+              {success && (
+                <p className="text-sm text-green-600" aria-live="polite">
+                  {success}
+                </p>
+              )}
 
               <div className="text-center text-sm text-gray-700 dark:text-gray-300">
                 Already have an account?{' '}
@@ -110,12 +137,15 @@ export function RegisterForm({
                   Login
                 </a>
               </div>
-            </div>
-          </form>
-          <div className="hidden md:block bg-gradient-to-br from-blue-100 via-purple-200 to-pink-300 dark:from-blue-900 dark:via-purple-800 dark:to-pink-900" />
+            </form>
+          </div>
+
+          {/* Column 2: Full-height Gradient */}
+          <div className="hidden md:block w-full h-full bg-gradient-to-br from-blue-100 via-purple-200 to-pink-300 dark:from-blue-900 dark:via-purple-800 dark:to-pink-900 rounded-r-lg" />
         </CardContent>
       </Card>
-      <div className="text-center text-xs text-gray-700 dark:text-gray-400 text-balance">
+
+      <div className="text-center text-xs text-gray-700 dark:text-gray-400">
         By signing up, you agree to our{' '}
         <a href="#" className="underline underline-offset-4 hover:text-primary">
           Terms of Service

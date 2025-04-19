@@ -40,28 +40,34 @@ export function LoginForm({
       setError(result?.error || 'Invalid credentials');
     } else {
       setSuccess('Login successful. Redirecting...');
-      router.replace('/dashboard'); // Adjust as needed
+      router.replace('/dashboard');
     }
   };
 
   return (
     <div
       className={cn(
-        'flex flex-col gap-6 bg-white dark:bg-gray-900 text-gray-900 dark:text-white p-6 rounded-lg',
+        'grid gap-6 container mx-auto w-full bg-white dark:bg-gray-900 text-gray-900 dark:text-white rounded-lg',
         className
       )}
       {...props}
     >
-      <Card className="overflow-hidden p-0 bg-white dark:bg-gray-800 border border-gray-200 dark:border-gray-700">
-        <CardContent className="grid p-0 md:grid-cols-2">
-          <form className="p-6 md:p-8" onSubmit={handleSubmit}>
-            <div className="flex flex-col gap-6">
-              <div className="flex flex-col items-center text-center">
+      <Card className="bg-white dark:bg-gray-800 border border-gray-200 dark:border-gray-700 p-0">
+        <CardContent className="grid md:grid-cols-2 p-0 min-h-[500px]">
+          {/* Column 1: Form with padding */}
+          <div className="flex items-center justify-center p-6">
+            <form
+              className="grid gap-6 w-full max-w-md"
+              onSubmit={handleSubmit}
+              noValidate
+            >
+              <div className="grid gap-1 text-center">
                 <h1 className="text-2xl font-bold">Welcome back</h1>
-                <p className="text-gray-700 dark:text-gray-300 text-balance">
+                <p className="text-gray-700 dark:text-gray-300">
                   Login to your SW-EAS account
                 </p>
               </div>
+
               <div className="grid gap-3">
                 <Label htmlFor="email">Email</Label>
                 <Input
@@ -71,14 +77,16 @@ export function LoginForm({
                   value={form.email}
                   onChange={handleChange}
                   required
+                  className="focus:outline-none focus:ring-0"
                 />
               </div>
+
               <div className="grid gap-3">
-                <div className="flex items-center">
+                <div className="grid grid-cols-[auto_1fr] items-center">
                   <Label htmlFor="password">Password</Label>
                   <a
                     href="#"
-                    className="ml-auto text-sm text-blue-600 dark:text-blue-400 underline-offset-2 hover:underline"
+                    className="justify-self-end text-sm text-blue-600 dark:text-blue-400 underline-offset-2 hover:underline"
                   >
                     Forgot your password?
                   </a>
@@ -89,8 +97,10 @@ export function LoginForm({
                   value={form.password}
                   onChange={handleChange}
                   required
+                  className="focus:outline-none focus:ring-0"
                 />
               </div>
+
               <Button type="submit" className="w-full">
                 Login
               </Button>
@@ -107,11 +117,14 @@ export function LoginForm({
                   Sign up
                 </Link>
               </div>
-            </div>
-          </form>
-          <div className="hidden md:block bg-gradient-to-br from-blue-100 via-purple-200 to-pink-300 dark:from-blue-900 dark:via-purple-800 dark:to-pink-900" />
+            </form>
+          </div>
+
+          {/* Column 2: Full-height Gradient */}
+          <div className="hidden md:block w-full h-full bg-gradient-to-br from-blue-100 via-purple-200 to-pink-300 dark:from-blue-900 dark:via-purple-800 dark:to-pink-900 rounded-r-lg" />
         </CardContent>
       </Card>
+
       <div className="text-center text-xs text-gray-700 dark:text-gray-400 text-balance">
         By clicking continue, you agree to our{' '}
         <a href="#" className="underline underline-offset-4 hover:text-primary">

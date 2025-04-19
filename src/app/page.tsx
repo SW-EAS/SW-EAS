@@ -12,7 +12,7 @@ export default async function Home() {
   }
 
   return (
-    <section className="h-full grid place-items-center px-6 py-16 bg-white dark:bg-gray-900 text-gray-900 dark:text-white">
+    <section className="h-full grid place-items-center bg-white dark:bg-gray-900 text-gray-900 dark:text-white">
       <div className="max-w-xl w-full grid gap-6 text-center">
         <ShieldCheck className="h-16 w-16 mx-auto text-primary-600 dark:text-primary-400" />
         <h1 className="text-3xl font-extrabold leading-tight tracking-tight">

@@ -5,9 +5,9 @@
 import { useEffect, useState } from 'react';
 import { useRouter, useSearchParams } from 'next/navigation';
 import { signIn } from 'next-auth/react';
+
 import { Tabs, TabsContent, TabsList, TabsTrigger } from '@/components/ui/tabs';
 import { Card, CardContent } from '@/components/ui/card';
-
 import { Input } from '@/components/ui/input';
 import { Label } from '@/components/ui/label';
 import { Button } from '@/components/ui/button';
@@ -116,25 +116,21 @@ export default function AuthTabs() {
   };
 
   return (
-    <div className=" w-full h-full grid place-items-center bg-white dark:bg-gray-900 px-4 text-gray-900 dark:text-white">
+    <div className="w-full h-full grid place-items-center container mx-auto text-gray-900 dark:text-white">
       <Tabs
         value={tab}
         onValueChange={(v: string) => setTab(v as 'login' | 'register')}
-        className="w-full max-w-md"
+        className="w-full "
       >
-        <TabsList className="grid w-full grid-cols-2 mb-4">
+        <TabsList>
           <TabsTrigger value="login">Login</TabsTrigger>
           <TabsTrigger value="register">Register</TabsTrigger>
         </TabsList>
 
         <TabsContent value="login">
           <Card>
-            <CardContent className="p-6">
-              <form
-                onSubmit={handleLogin}
-                noValidate
-                className="w-full grid gap-6"
-              >
+            <CardContent className="grid gap-6">
+              <form onSubmit={handleLogin} noValidate className="grid gap-6">
                 <div>
                   <h1 className="text-2xl font-semibold">Welcome back</h1>
                   <p className="text-sm text-gray-600 dark:text-gray-400">
@@ -151,7 +147,6 @@ export default function AuthTabs() {
                     onChange={handleChange(setLoginForm)}
                     required
                     autoComplete="email"
-                    className="border border-gray-300 dark:border-gray-700 bg-transparent"
                   />
                 </div>
 
@@ -160,7 +155,7 @@ export default function AuthTabs() {
                     <Label htmlFor="password">Password</Label>
                     <a
                       href="#"
-                      className="text-sm text-blue-600 dark:text-blue-400 underline-offset-2 hover:underline"
+                      className="text-sm text-blue-600 dark:text-blue-400 hover:underline"
                     >
                       Forgot password?
                     </a>
@@ -172,7 +167,6 @@ export default function AuthTabs() {
                     onChange={handleChange(setLoginForm)}
                     required
                     autoComplete="current-password"
-                    className="border border-gray-300 dark:border-gray-700 bg-transparent"
                   />
                 </div>
 
@@ -189,12 +183,8 @@ export default function AuthTabs() {
 
         <TabsContent value="register">
           <Card>
-            <CardContent className="p-6">
-              <form
-                onSubmit={handleRegister}
-                noValidate
-                className="w-full max-w-md grid gap-6"
-              >
+            <CardContent className="p-6 grid gap-6">
+              <form onSubmit={handleRegister} noValidate className="grid gap-6">
                 <div>
                   <h1 className="text-2xl font-semibold mb-2">
                     Create an account
@@ -213,7 +203,6 @@ export default function AuthTabs() {
                     onChange={handleChange(setRegisterForm)}
                     required
                     autoComplete="name"
-                    className="border border-gray-300 dark:border-gray-700 bg-transparent"
                   />
                 </div>
 
@@ -226,7 +215,6 @@ export default function AuthTabs() {
                     onChange={handleChange(setRegisterForm)}
                     required
                     autoComplete="email"
-                    className="border border-gray-300 dark:border-gray-700 bg-transparent"
                   />
                 </div>
 
@@ -239,7 +227,6 @@ export default function AuthTabs() {
                     onChange={handleChange(setRegisterForm)}
                     required
                     autoComplete="new-password"
-                    className="border border-gray-300 dark:border-gray-700 bg-transparent"
                   />
                 </div>
 

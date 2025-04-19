@@ -8,7 +8,6 @@ export default async function Home() {
   const session = await getServerSession(authOptions);
 
   if (session?.user) {
-    // 🔁 Redirect authenticated users to the dashboard
     redirect('/dashboard');
   }
 

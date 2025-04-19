@@ -28,8 +28,6 @@ export default function RootLayout({
     <html lang="en" className={openSans.variable}>
       <body className="h-screen grid grid-rows-[auto_1fr_auto] antialiased bg-white text-black">
         <SessionWrapper>
-          {' '}
-          {/* ✅ moved client context to client component */}
           <Header />
           <main>{children}</main>
           <Footer />

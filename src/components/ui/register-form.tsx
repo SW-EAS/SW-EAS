@@ -13,13 +13,19 @@ export function RegisterForm({
   ...props
 }: React.ComponentProps<'div'>) {
   const router = useRouter();
-  const [form, setForm] = useState({ name: '', email: '', password: '' });
+  const [form, setForm] = useState({
+    name: '',
+    email: '',
+    password: '',
+    termsAccepted: false,
+  });
   const [error, setError] = useState('');
   const [success, setSuccess] = useState('');
   const [loading, setLoading] = useState(false);
 
   const handleChange = (e: React.ChangeEvent<HTMLInputElement>) => {
-    setForm({ ...form, [e.target.id]: e.target.value });
+    const { id, type, checked, value } = e.target;
+    setForm({ ...form, [id]: type === 'checkbox' ? checked : value });
   };
 
   const handleSubmit = async (e: React.FormEvent<HTMLFormElement>) => {
@@ -28,11 +34,22 @@ export function RegisterForm({
     setSuccess('');
     setLoading(true);
 
+    if (!form.termsAccepted) {
+      setError('You must agree to the Terms of Service and Privacy Policy.');
+      setLoading(false);
+      return;
+    }
+
     try {
       const res = await fetch('/api/register', {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify({ ...form, role: 'user' }),
+        body: JSON.stringify({
+          name: form.name,
+          email: form.email,
+          password: form.password,
+          role: 'user',
+        }),
       });
 
       const data = await res.json();
@@ -58,9 +75,7 @@ export function RegisterForm({
     >
       <Card className="bg-white dark:bg-gray-800 border border-gray-200 dark:border-gray-700 p-0">
         <CardContent className="grid md:grid-cols-2 p-0 ">
-          {/* Column 1: Strict 3-row grid */}
           <div className="grid grid-rows-[auto_1fr_auto] p-6">
-            {/* Row 1: Header */}
             <div className="text-center mb-6">
               <h1 className="text-2xl font-bold">Create an account</h1>
               <p className="text-gray-700 dark:text-gray-300">
@@ -68,7 +83,6 @@ export function RegisterForm({
               </p>
             </div>
 
-            {/* Row 2: Form */}
             <form
               className="grid gap-6 w-full max-w-md justify-self-center self-center"
               onSubmit={handleSubmit}
@@ -115,6 +129,37 @@ export function RegisterForm({
                 />
               </div>
 
+              <div className="flex items-start gap-2 text-sm">
+                <input
+                  id="termsAccepted"
+                  type="checkbox"
+                  checked={form.termsAccepted}
+                  onChange={handleChange}
+                  required
+                  className="mt-1"
+                />
+                <label
+                  htmlFor="termsAccepted"
+                  className="text-gray-700 dark:text-gray-400"
+                >
+                  I agree to the{' '}
+                  <a
+                    href="#"
+                    className="underline underline-offset-4 hover:text-primary"
+                  >
+                    Terms of Service
+                  </a>{' '}
+                  and{' '}
+                  <a
+                    href="#"
+                    className="underline underline-offset-4 hover:text-primary"
+                  >
+                    Privacy Policy
+                  </a>
+                  .
+                </label>
+              </div>
+
               <Button type="submit" className="w-full" disabled={loading}>
                 {loading ? 'Registering...' : 'Sign Up'}
               </Button>
@@ -131,7 +176,6 @@ export function RegisterForm({
               )}
             </form>
 
-            {/* Row 3: Alternative action */}
             <div className="text-center text-sm text-gray-700 dark:text-gray-300 mt-6">
               Already have an account?{' '}
               <a
@@ -143,21 +187,13 @@ export function RegisterForm({
             </div>
           </div>
 
-          {/* Column 2: Gradient */}
           <div className="hidden md:block w-full h-full bg-gradient-to-br from-blue-100 via-purple-200 to-pink-300 dark:from-blue-900 dark:via-purple-800 dark:to-pink-900 rounded-r-lg" />
         </CardContent>
       </Card>
 
-      <div className="text-center text-xs text-gray-700 dark:text-gray-400">
-        By signing up, you agree to our{' '}
-        <a href="#" className="underline underline-offset-4 hover:text-primary">
-          Terms of Service
-        </a>{' '}
-        and{' '}
-        <a href="#" className="underline underline-offset-4 hover:text-primary">
-          Privacy Policy
-        </a>
-        .
+      <div className="text-center text-xs text-gray-700 dark:text-gray-400 text-balance">
+        All verified advertisements will be displayed in the image container
+        here.
       </div>
     </div>
   );

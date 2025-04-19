@@ -116,7 +116,7 @@ export default function AuthTabs() {
   };
 
   return (
-    <div className="w-full h-full grid place-items-center container mx-auto text-gray-900 dark:text-white">
+    <div className="w-full p-6 h-full grid place-items-center container mx-auto text-gray-900 dark:text-white">
       <Tabs
         value={tab}
         onValueChange={(v: string) => setTab(v as 'login' | 'register')}

@@ -4,7 +4,7 @@ export default function AuthPage() {
   return (
     <div className="grid grid-cols-1 md:grid-cols-2 h-full w-full text-gray-900 dark:text-white">
       {/* Left column: Auth forms */}
-      <div className="flex items-center justify-center p-6">
+      <div className="flex items-center justify-center ">
         <AuthTabs />
       </div>
 

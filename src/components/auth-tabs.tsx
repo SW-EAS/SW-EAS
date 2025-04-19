@@ -33,6 +33,7 @@ export default function AuthTabs() {
     email: '',
     password: '',
   });
+
   const [registerForm, setRegisterForm] = useState<RegisterForm>({
     name: '',
     email: '',
@@ -45,8 +46,10 @@ export default function AuthTabs() {
   const [loading, setLoading] = useState(false);
 
   useEffect(() => {
-    const t = searchParams.get('tab');
-    setTab(t === 'register' ? 'register' : 'login');
+    if (searchParams) {
+      const t = searchParams.get('tab');
+      setTab(t === 'register' ? 'register' : 'login');
+    }
   }, [searchParams]);
 
   const handleChange =
@@ -108,8 +111,7 @@ export default function AuthTabs() {
       setSuccess('Registration successful. Redirecting...');
       setTimeout(() => router.push('/auth?tab=login'), 1500);
     } catch (err) {
-      const error = err as Error;
-      setError(error.message || 'Something went wrong');
+      setError((err as Error).message || 'Something went wrong');
     } finally {
       setLoading(false);
     }
@@ -119,8 +121,8 @@ export default function AuthTabs() {
     <div className="w-full p-6 h-full grid place-items-center container mx-auto text-gray-900 dark:text-white">
       <Tabs
         value={tab}
-        onValueChange={(v: string) => setTab(v as 'login' | 'register')}
-        className="w-full "
+        onValueChange={(v) => setTab(v as 'login' | 'register')}
+        className="w-full"
       >
         <TabsList>
           <TabsTrigger value="login">Login</TabsTrigger>
@@ -133,7 +135,7 @@ export default function AuthTabs() {
               <form onSubmit={handleLogin} noValidate className="grid gap-6">
                 <div>
                   <h1 className="text-2xl font-semibold">Welcome back</h1>
-                  <p className="text-sm text-gray-600 dark:text-gray-400">
+                  <p className="text-sm text-muted-foreground">
                     Login to your SW-EAS account
                   </p>
                 </div>
@@ -189,7 +191,7 @@ export default function AuthTabs() {
                   <h1 className="text-2xl font-semibold mb-2">
                     Create an account
                   </h1>
-                  <p className="text-sm text-gray-600 dark:text-gray-400">
+                  <p className="text-sm text-muted-foreground">
                     Join SW-EAS and lead with integrity
                   </p>
                 </div>
@@ -239,7 +241,7 @@ export default function AuthTabs() {
                     required
                     className="mt-1"
                   />
-                  <label htmlFor="termsAccepted">
+                  <Label htmlFor="termsAccepted">
                     I agree to the{' '}
                     <a href="#" className="underline">
                       Terms of Service
@@ -249,7 +251,7 @@ export default function AuthTabs() {
                       Privacy Policy
                     </a>
                     .
-                  </label>
+                  </Label>
                 </div>
 
                 <Button type="submit" className="w-full" disabled={loading}>

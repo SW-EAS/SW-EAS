@@ -3,9 +3,13 @@
 import * as React from 'react';
 import { cn } from '@/lib/utils';
 
-function Input({ className, type, ...props }: React.ComponentProps<'input'>) {
+const Input = React.forwardRef<
+  HTMLInputElement,
+  React.InputHTMLAttributes<HTMLInputElement>
+>(({ className, type = 'text', ...props }, ref) => {
   return (
     <input
+      ref={ref}
       type={type}
       data-slot="input"
       className={cn(
@@ -15,7 +19,7 @@ function Input({ className, type, ...props }: React.ComponentProps<'input'>) {
         // Visuals
         'placeholder:text-muted-foreground file:text-foreground selection:bg-primary selection:text-primary-foreground dark:bg-input/30',
 
-        // Focus — explicitly KEEP the same border color
+        // Focus
         'focus:outline-none focus:ring-0 focus:border-input',
 
         // States
@@ -30,6 +34,8 @@ function Input({ className, type, ...props }: React.ComponentProps<'input'>) {
       {...props}
     />
   );
-}
+});
+
+Input.displayName = 'Input';
 
 export { Input };

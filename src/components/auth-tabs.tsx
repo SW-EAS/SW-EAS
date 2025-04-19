@@ -1,9 +1,10 @@
+//src/app/components/auth-tabs.tsx
+
 'use client';
 
 import { useEffect, useState } from 'react';
 import { useRouter, useSearchParams } from 'next/navigation';
 import { signIn } from 'next-auth/react';
-import Link from 'next/link';
 import { Tabs, TabsContent, TabsList, TabsTrigger } from '@/components/ui/tabs';
 import { Card, CardContent } from '@/components/ui/card';
 
@@ -115,10 +116,10 @@ export default function AuthTabs() {
   };
 
   return (
-    <div className="h-full grid place-items-center bg-white dark:bg-gray-900 px-4 text-gray-900 dark:text-white">
+    <div className=" w-full h-full grid place-items-center bg-white dark:bg-gray-900 px-4 text-gray-900 dark:text-white">
       <Tabs
         value={tab}
-        onValueChange={(v) => setTab(v as 'login' | 'register')}
+        onValueChange={(v: string) => setTab(v as 'login' | 'register')}
         className="w-full max-w-md"
       >
         <TabsList className="grid w-full grid-cols-2 mb-4">
@@ -132,7 +133,7 @@ export default function AuthTabs() {
               <form
                 onSubmit={handleLogin}
                 noValidate
-                className="w-full max-w-md grid gap-6"
+                className="w-full grid gap-6"
               >
                 <div>
                   <h1 className="text-2xl font-semibold">Welcome back</h1>
@@ -181,16 +182,6 @@ export default function AuthTabs() {
 
                 {error && <p className="text-sm text-red-500">{error}</p>}
                 {success && <p className="text-sm text-green-600">{success}</p>}
-
-                <div className="text-center text-sm text-gray-700 dark:text-gray-300">
-                  Don&apos;t have an account?{' '}
-                  <Link
-                    href="/auth?tab=register"
-                    className="underline text-blue-600 dark:text-blue-400"
-                  >
-                    Sign up
-                  </Link>
-                </div>
               </form>
             </CardContent>
           </Card>
@@ -280,16 +271,6 @@ export default function AuthTabs() {
 
                 {error && <p className="text-sm text-red-500">{error}</p>}
                 {success && <p className="text-sm text-green-600">{success}</p>}
-
-                <div className="text-sm text-gray-700 dark:text-gray-300 text-center">
-                  Already have an account?{' '}
-                  <Link
-                    href="/auth?tab=login"
-                    className="underline text-blue-600 dark:text-blue-400"
-                  >
-                    Login
-                  </Link>
-                </div>
               </form>
             </CardContent>
           </Card>

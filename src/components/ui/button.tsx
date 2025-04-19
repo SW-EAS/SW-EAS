@@ -1,11 +1,8 @@
 // src/components/ui/button.tsx
 
-// src/components/ui/button.tsx
-
 import * as React from 'react';
 import { Slot } from '@radix-ui/react-slot';
 import { cva, type VariantProps } from 'class-variance-authority';
-
 import { cn } from '@/lib/utils';
 
 const buttonVariants = cva(
@@ -49,7 +46,6 @@ function Button({
     asChild?: boolean;
   }) {
   const Comp = asChild ? Slot : 'button';
-
   return (
     <Comp
       data-slot="button"
@@ -58,5 +54,7 @@ function Button({
     />
   );
 }
+
+Button.displayName = 'Button';
 
 export { Button, buttonVariants };

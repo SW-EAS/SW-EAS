@@ -57,21 +57,23 @@ export function RegisterForm({
       {...props}
     >
       <Card className="bg-white dark:bg-gray-800 border border-gray-200 dark:border-gray-700 p-0">
-        <CardContent className="grid md:grid-cols-2 p-0 min-h-[500px]">
-          {/* Column 1: Form with padding */}
-          <div className="flex items-center justify-center p-6">
+        <CardContent className="grid md:grid-cols-2 p-0 ">
+          {/* Column 1: Strict 3-row grid */}
+          <div className="grid grid-rows-[auto_1fr_auto] p-6">
+            {/* Row 1: Header */}
+            <div className="text-center mb-6">
+              <h1 className="text-2xl font-bold">Create an account</h1>
+              <p className="text-gray-700 dark:text-gray-300">
+                Join SW-EAS and lead with integrity
+              </p>
+            </div>
+
+            {/* Row 2: Form */}
             <form
-              className="grid gap-6 w-full max-w-md"
+              className="grid gap-6 w-full max-w-md justify-self-center self-center"
               onSubmit={handleSubmit}
               noValidate
             >
-              <div className="grid gap-1 text-center">
-                <h1 className="text-2xl font-bold">Create an account</h1>
-                <p className="text-gray-700 dark:text-gray-300">
-                  Join SW-EAS and lead with integrity
-                </p>
-              </div>
-
               <div className="grid gap-3">
                 <Label htmlFor="name">Name</Label>
                 <Input
@@ -127,20 +129,21 @@ export function RegisterForm({
                   {success}
                 </p>
               )}
-
-              <div className="text-center text-sm text-gray-700 dark:text-gray-300">
-                Already have an account?{' '}
-                <a
-                  href="/login"
-                  className="underline underline-offset-4 text-blue-600 dark:text-blue-400"
-                >
-                  Login
-                </a>
-              </div>
             </form>
+
+            {/* Row 3: Alternative action */}
+            <div className="text-center text-sm text-gray-700 dark:text-gray-300 mt-6">
+              Already have an account?{' '}
+              <a
+                href="/login"
+                className="underline underline-offset-4 text-blue-600 dark:text-blue-400"
+              >
+                Login
+              </a>
+            </div>
           </div>
 
-          {/* Column 2: Full-height Gradient */}
+          {/* Column 2: Gradient */}
           <div className="hidden md:block w-full h-full bg-gradient-to-br from-blue-100 via-purple-200 to-pink-300 dark:from-blue-900 dark:via-purple-800 dark:to-pink-900 rounded-r-lg" />
         </CardContent>
       </Card>

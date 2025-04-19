@@ -53,21 +53,22 @@ export function LoginForm({
       {...props}
     >
       <Card className="bg-white dark:bg-gray-800 border border-gray-200 dark:border-gray-700 p-0">
-        <CardContent className="grid md:grid-cols-2 p-0 min-h-[500px]">
-          {/* Column 1: Form with padding */}
-          <div className="flex items-center justify-center p-6">
+        <CardContent className="grid md:grid-cols-2 p-0 ">
+          <div className="grid grid-rows-[auto_1fr_auto] p-6">
+            {/* Row 1: Heading */}
+            <div className="text-center mb-6">
+              <h1 className="text-2xl font-bold">Welcome back</h1>
+              <p className="text-gray-700 dark:text-gray-300">
+                Login to your SW-EAS account
+              </p>
+            </div>
+
+            {/* Row 2: Form */}
             <form
-              className="grid gap-6 w-full max-w-md"
+              className="grid gap-6 w-full max-w-md justify-self-center self-center"
               onSubmit={handleSubmit}
               noValidate
             >
-              <div className="grid gap-1 text-center">
-                <h1 className="text-2xl font-bold">Welcome back</h1>
-                <p className="text-gray-700 dark:text-gray-300">
-                  Login to your SW-EAS account
-                </p>
-              </div>
-
               <div className="grid gap-3">
                 <Label htmlFor="email">Email</Label>
                 <Input
@@ -107,17 +108,18 @@ export function LoginForm({
 
               {error && <p className="text-sm text-red-500">{error}</p>}
               {success && <p className="text-sm text-green-600">{success}</p>}
-
-              <div className="text-center text-sm text-gray-700 dark:text-gray-300">
-                Don&apos;t have an account?{' '}
-                <Link
-                  href="/register"
-                  className="underline underline-offset-4 text-blue-600 dark:text-blue-400"
-                >
-                  Sign up
-                </Link>
-              </div>
             </form>
+
+            {/* Row 3: Alternative Action */}
+            <div className="text-center text-sm text-gray-700 dark:text-gray-300 mt-6">
+              Don&apos;t have an account?{' '}
+              <Link
+                href="/register"
+                className="underline underline-offset-4 text-blue-600 dark:text-blue-400"
+              >
+                Sign up
+              </Link>
+            </div>
           </div>
 
           {/* Column 2: Full-height Gradient */}

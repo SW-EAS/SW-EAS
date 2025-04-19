@@ -1,0 +1,270 @@
+//src/app/components/auth-tabs.tsx
+
+'use client';
+
+import { useEffect, useState } from 'react';
+import { useRouter, useSearchParams } from 'next/navigation';
+import { signIn } from 'next-auth/react';
+
+import { Tabs, TabsContent, TabsList, TabsTrigger } from '@/components/ui/tabs';
+import { Card, CardContent } from '@/components/ui/card';
+import { Input } from '@/components/ui/input';
+import { Label } from '@/components/ui/label';
+import { Button } from '@/components/ui/button';
+
+type LoginForm = {
+  email: string;
+  password: string;
+};
+
+type RegisterForm = {
+  name: string;
+  email: string;
+  password: string;
+  termsAccepted: boolean;
+};
+
+export default function AuthTabs() {
+  const router = useRouter();
+  const searchParams = useSearchParams();
+  const [tab, setTab] = useState<'login' | 'register'>('login');
+
+  const [loginForm, setLoginForm] = useState<LoginForm>({
+    email: '',
+    password: '',
+  });
+
+  const [registerForm, setRegisterForm] = useState<RegisterForm>({
+    name: '',
+    email: '',
+    password: '',
+    termsAccepted: false,
+  });
+
+  const [error, setError] = useState('');
+  const [success, setSuccess] = useState('');
+  const [loading, setLoading] = useState(false);
+
+  useEffect(() => {
+    if (searchParams) {
+      const t = searchParams.get('tab');
+      setTab(t === 'register' ? 'register' : 'login');
+    }
+  }, [searchParams]);
+
+  const handleChange =
+    <T extends Record<string, unknown>>(
+      setState: React.Dispatch<React.SetStateAction<T>>
+    ) =>
+    (e: React.ChangeEvent<HTMLInputElement>) => {
+      const { id, type, checked, value } = e.target;
+      setState((prev) => ({
+        ...prev,
+        [id]: type === 'checkbox' ? checked : value,
+      }));
+    };
+
+  const handleLogin = async (e: React.FormEvent<HTMLFormElement>) => {
+    e.preventDefault();
+    setError('');
+    setSuccess('');
+    setLoading(true);
+
+    const result = await signIn('credentials', {
+      redirect: false,
+      email: loginForm.email,
+      password: loginForm.password,
+    });
+
+    if (!result || result.error) {
+      setError(result?.error || 'Invalid credentials');
+    } else {
+      setSuccess('Login successful. Redirecting...');
+      router.replace('/dashboard');
+    }
+
+    setLoading(false);
+  };
+
+  const handleRegister = async (e: React.FormEvent<HTMLFormElement>) => {
+    e.preventDefault();
+    setError('');
+    setSuccess('');
+    setLoading(true);
+
+    if (!registerForm.termsAccepted) {
+      setError('You must accept the Terms and Privacy Policy.');
+      setLoading(false);
+      return;
+    }
+
+    try {
+      const res = await fetch('/api/register', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ ...registerForm, role: 'user' }),
+      });
+
+      const data = await res.json();
+      if (!res.ok) throw new Error(data.message);
+
+      setSuccess('Registration successful. Redirecting...');
+      setTimeout(() => router.push('/auth?tab=login'), 1500);
+    } catch (err) {
+      setError((err as Error).message || 'Something went wrong');
+    } finally {
+      setLoading(false);
+    }
+  };
+
+  return (
+    <div className="w-full p-6 h-full grid place-items-center container mx-auto text-gray-900 dark:text-white">
+      <Tabs
+        value={tab}
+        onValueChange={(v) => setTab(v as 'login' | 'register')}
+        className="w-full"
+      >
+        <TabsList>
+          <TabsTrigger value="login">Login</TabsTrigger>
+          <TabsTrigger value="register">Register</TabsTrigger>
+        </TabsList>
+
+        <TabsContent value="login">
+          <Card>
+            <CardContent className="grid gap-6">
+              <form onSubmit={handleLogin} noValidate className="grid gap-6">
+                <div>
+                  <h1 className="text-2xl font-semibold">Welcome back</h1>
+                  <p className="text-sm text-muted-foreground">
+                    Login to your SW-EAS account
+                  </p>
+                </div>
+
+                <div className="grid gap-3">
+                  <Label htmlFor="email">Email</Label>
+                  <Input
+                    id="email"
+                    type="email"
+                    value={loginForm.email}
+                    onChange={handleChange(setLoginForm)}
+                    required
+                    autoComplete="email"
+                  />
+                </div>
+
+                <div className="grid gap-3">
+                  <div className="flex justify-between items-center">
+                    <Label htmlFor="password">Password</Label>
+                    <a
+                      href="#"
+                      className="text-sm text-blue-600 dark:text-blue-400 hover:underline"
+                    >
+                      Forgot password?
+                    </a>
+                  </div>
+                  <Input
+                    id="password"
+                    type="password"
+                    value={loginForm.password}
+                    onChange={handleChange(setLoginForm)}
+                    required
+                    autoComplete="current-password"
+                  />
+                </div>
+
+                <Button type="submit" className="w-full" disabled={loading}>
+                  {loading ? 'Logging in...' : 'Login'}
+                </Button>
+
+                {error && <p className="text-sm text-red-500">{error}</p>}
+                {success && <p className="text-sm text-green-600">{success}</p>}
+              </form>
+            </CardContent>
+          </Card>
+        </TabsContent>
+
+        <TabsContent value="register">
+          <Card>
+            <CardContent className="p-6 grid gap-6">
+              <form onSubmit={handleRegister} noValidate className="grid gap-6">
+                <div>
+                  <h1 className="text-2xl font-semibold mb-2">
+                    Create an account
+                  </h1>
+                  <p className="text-sm text-muted-foreground">
+                    Join SW-EAS and lead with integrity
+                  </p>
+                </div>
+
+                <div className="grid gap-3">
+                  <Label htmlFor="name">Name</Label>
+                  <Input
+                    id="name"
+                    type="text"
+                    value={registerForm.name}
+                    onChange={handleChange(setRegisterForm)}
+                    required
+                    autoComplete="name"
+                  />
+                </div>
+
+                <div className="grid gap-3">
+                  <Label htmlFor="email">Email</Label>
+                  <Input
+                    id="email"
+                    type="email"
+                    value={registerForm.email}
+                    onChange={handleChange(setRegisterForm)}
+                    required
+                    autoComplete="email"
+                  />
+                </div>
+
+                <div className="grid gap-3">
+                  <Label htmlFor="password">Password</Label>
+                  <Input
+                    id="password"
+                    type="password"
+                    value={registerForm.password}
+                    onChange={handleChange(setRegisterForm)}
+                    required
+                    autoComplete="new-password"
+                  />
+                </div>
+
+                <div className="flex items-start gap-2 text-sm">
+                  <input
+                    id="termsAccepted"
+                    type="checkbox"
+                    checked={registerForm.termsAccepted}
+                    onChange={handleChange(setRegisterForm)}
+                    required
+                    className="mt-1"
+                  />
+                  <Label htmlFor="termsAccepted">
+                    I agree to the{' '}
+                    <a href="#" className="underline">
+                      Terms of Service
+                    </a>{' '}
+                    and{' '}
+                    <a href="#" className="underline">
+                      Privacy Policy
+                    </a>
+                    .
+                  </Label>
+                </div>
+
+                <Button type="submit" className="w-full" disabled={loading}>
+                  {loading ? 'Registering...' : 'Sign Up'}
+                </Button>
+
+                {error && <p className="text-sm text-red-500">{error}</p>}
+                {success && <p className="text-sm text-green-600">{success}</p>}
+              </form>
+            </CardContent>
+          </Card>
+        </TabsContent>
+      </Tabs>
+    </div>
+  );
+}

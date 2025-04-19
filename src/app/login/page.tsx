@@ -1,11 +1,16 @@
 // src/app/login/page.tsx
 
-import { LoginForm } from '@/components/ui/login-form';
+'use client';
 
-export default function LoginPage() {
-  return (
-    <div className="h-full grid place-items-center bg-white dark:bg-gray-900 text-gray-900 dark:text-white">
-      <LoginForm />
-    </div>
-  );
+import { useEffect } from 'react';
+import { useRouter } from 'next/navigation';
+
+export default function LoginRedirectPage() {
+  const router = useRouter();
+
+  useEffect(() => {
+    router.replace('/auth?tab=login');
+  }, [router]);
+
+  return null;
 }

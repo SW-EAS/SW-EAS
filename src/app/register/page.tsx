@@ -1,11 +1,16 @@
 // src/app/register/page.tsx
 
-import { RegisterForm } from '@/components/ui/register-form';
+'use client';
 
-export default function RegisterPage() {
-  return (
-    <div className="h-full grid place-items-center bg-white dark:bg-gray-900 text-gray-900 dark:text-white">
-      <RegisterForm />
-    </div>
-  );
+import { useEffect } from 'react';
+import { useRouter } from 'next/navigation';
+
+export default function RegisterRedirectPage() {
+  const router = useRouter();
+
+  useEffect(() => {
+    router.replace('/auth?tab=register');
+  }, [router]);
+
+  return null;
 }
